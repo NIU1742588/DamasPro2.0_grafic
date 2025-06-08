@@ -1,0 +1,105 @@
+﻿  debug.cpp
+  image_png.cpp
+  keyboard.cpp
+  mouse.cpp
+  NFont.cpp
+  SDL_FontCache.cpp
+  sound.cpp
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Graphic Lib\NFont\SDL_FontCache.cpp(138,23): warning C4267: 'inicializando': conversión de 'size_t' a 'unsigned int'; posible pérdida de datos
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Graphic Lib\NFont\SDL_FontCache.cpp(205,25): warning C4309: '=': truncamiento de valor constante
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Graphic Lib\NFont\SDL_FontCache.cpp(216,25): warning C4309: '=': truncamiento de valor constante
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Graphic Lib\NFont\SDL_FontCache.cpp(570,17): warning C4267: '=': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Graphic Lib\NFont\SDL_FontCache.cpp(571,21): warning C4267: '=': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Graphic Lib\NFont\SDL_FontCache.cpp(607,33): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Graphic Lib\NFont\SDL_FontCache.cpp(2654,17): warning C4267: 'inicializando': conversión de 'size_t' a 'int'; posible pérdida de datos
+  sprites.cpp
+  stb_vorbis.cpp
+  video.cpp
+  GraphicManager.cpp
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Logic Game\GraphicManager.cpp(29,37): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Logic Game\GraphicManager.cpp(29,31): warning C4244: 'argumento': conversión de 'float' a 'int'; posible pérdida de datos
+  joc.cpp
+  main.cpp
+  Generando código...
+image_png.obj : error LNK2019: símbolo externo png_set_sig_bytes sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_sig_cmp sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_create_read_struct sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_create_info_struct sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_read_info sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_destroy_info_struct sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_destroy_read_struct sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_init_io sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_free sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_get_image_width sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+image_png.obj : error LNK2019: símbolo externo png_get_image_height sin resolver al que se hace referencia en la función "void __cdecl read_png_file(char const *,int *,int *)" (?read_png_file@@YAXPEBDPEAH1@Z)
+keyboard.obj : error LNK2019: símbolo externo SDL_GetScancodeFromKey sin resolver al que se hace referencia en la función "int __cdecl Keyboard_GetKeyCnt(int)" (?Keyboard_GetKeyCnt@@YAHH@Z)
+video.obj : error LNK2001: símbolo externo SDL_GetScancodeFromKey sin resolver
+mouse.obj : error LNK2019: símbolo externo SDL_GetMouseState sin resolver al que se hace referencia en la función "void __cdecl Mouse_Tick(void)" (?Mouse_Tick@@YAXXZ)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_GetError sin resolver al que se hace referencia en la función FC_LoadFont
+video.obj : error LNK2001: símbolo externo SDL_GetError sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_RWFromFile sin resolver al que se hace referencia en la función FC_LoadFont
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_CreateRGBSurface sin resolver al que se hace referencia en la función "struct SDL_Surface * __cdecl FC_CreateSurface32(unsigned int,unsigned int)" (?FC_CreateSurface32@@YAPEAUSDL_Surface@@II@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_FreeSurface sin resolver al que se hace referencia en la función FC_GetGlyphData
+sprites.obj : error LNK2001: símbolo externo SDL_FreeSurface sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_SetSurfaceBlendMode sin resolver al que se hace referencia en la función "unsigned char __cdecl FC_AddGlyphToCache(struct FC_Font *,struct SDL_Surface *)" (?FC_AddGlyphToCache@@YAEPEAUFC_Font@@PEAUSDL_Surface@@@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_UpperBlit sin resolver al que se hace referencia en la función FC_LoadFontFromTTF
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_SetHint sin resolver al que se hace referencia en la función FC_UploadGlyphCache
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_GetHint sin resolver al que se hace referencia en la función FC_UploadGlyphCache
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_Log sin resolver al que se hace referencia en la función "unsigned char __cdecl FC_GrowGlyphCache(struct FC_Font *)" (?FC_GrowGlyphCache@@YAEPEAUFC_Font@@@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_GetRendererInfo sin resolver al que se hace referencia en la función FC_LoadFontFromTTF
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_CreateTexture sin resolver al que se hace referencia en la función "unsigned char __cdecl FC_GrowGlyphCache(struct FC_Font *)" (?FC_GrowGlyphCache@@YAEPEAUFC_Font@@@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_CreateTextureFromSurface sin resolver al que se hace referencia en la función "unsigned char __cdecl FC_AddGlyphToCache(struct FC_Font *,struct SDL_Surface *)" (?FC_AddGlyphToCache@@YAEPEAUFC_Font@@PEAUSDL_Surface@@@Z)
+sprites.obj : error LNK2001: símbolo externo SDL_CreateTextureFromSurface sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_QueryTexture sin resolver al que se hace referencia en la función FC_GetGlyphData
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_SetTextureColorMod sin resolver al que se hace referencia en la función "void __cdecl set_color(struct SDL_Texture *,unsigned char,unsigned char,unsigned char,unsigned char)" (?set_color@@YAXPEAUSDL_Texture@@EEEE@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_SetTextureAlphaMod sin resolver al que se hace referencia en la función "void __cdecl set_color(struct SDL_Texture *,unsigned char,unsigned char,unsigned char,unsigned char)" (?set_color@@YAXPEAUSDL_Texture@@EEEE@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_SetTextureBlendMode sin resolver al que se hace referencia en la función FC_LoadFontFromTTF
+sprites.obj : error LNK2001: símbolo externo SDL_SetTextureBlendMode sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_SetRenderTarget sin resolver al que se hace referencia en la función "unsigned char __cdecl FC_AddGlyphToCache(struct FC_Font *,struct SDL_Surface *)" (?FC_AddGlyphToCache@@YAEPEAUFC_Font@@PEAUSDL_Surface@@@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_RenderSetClipRect sin resolver al que se hace referencia en la función "void __cdecl set_clip(struct SDL_Renderer *,struct SDL_Rect *)" (?set_clip@@YAXPEAUSDL_Renderer@@PEAUSDL_Rect@@@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_RenderGetClipRect sin resolver al que se hace referencia en la función "struct SDL_Rect __cdecl get_clip(struct SDL_Renderer *)" (?get_clip@@YA?AUSDL_Rect@@PEAUSDL_Renderer@@@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_RenderIsClipEnabled sin resolver al que se hace referencia en la función "unsigned char __cdecl has_clip(struct SDL_Renderer *)" (?has_clip@@YAEPEAUSDL_Renderer@@@Z)
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_SetRenderDrawColor sin resolver al que se hace referencia en la función FC_UploadGlyphCache
+video.obj : error LNK2001: símbolo externo SDL_SetRenderDrawColor sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_GetRenderDrawColor sin resolver al que se hace referencia en la función FC_UploadGlyphCache
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_RenderClear sin resolver al que se hace referencia en la función FC_UploadGlyphCache
+video.obj : error LNK2001: símbolo externo SDL_RenderClear sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_RenderCopy sin resolver al que se hace referencia en la función "unsigned char __cdecl FC_AddGlyphToCache(struct FC_Font *,struct SDL_Surface *)" (?FC_AddGlyphToCache@@YAEPEAUFC_Font@@PEAUSDL_Surface@@@Z)
+sprites.obj : error LNK2001: símbolo externo SDL_RenderCopy sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_RenderCopyEx sin resolver al que se hace referencia en la función FC_DefaultRenderCallback
+SDL_FontCache.obj : error LNK2019: símbolo externo SDL_DestroyTexture sin resolver al que se hace referencia en la función "unsigned char __cdecl FC_AddGlyphToCache(struct FC_Font *,struct SDL_Surface *)" (?FC_AddGlyphToCache@@YAEPEAUFC_Font@@PEAUSDL_Surface@@@Z)
+sprites.obj : error LNK2001: símbolo externo SDL_DestroyTexture sin resolver
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_Init sin resolver al que se hace referencia en la función FC_LoadFont_RW
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_OpenFontRW sin resolver al que se hace referencia en la función FC_LoadFont_RW
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_SetFontStyle sin resolver al que se hace referencia en la función FC_LoadFont_RW
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_SetFontOutline sin resolver al que se hace referencia en la función FC_LoadFont_RW
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_FontHeight sin resolver al que se hace referencia en la función FC_LoadFontFromTTF
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_FontAscent sin resolver al que se hace referencia en la función FC_LoadFontFromTTF
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_FontDescent sin resolver al que se hace referencia en la función FC_LoadFontFromTTF
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_RenderUTF8_Blended sin resolver al que se hace referencia en la función FC_GetGlyphData
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_CloseFont sin resolver al que se hace referencia en la función FC_ClearFont
+SDL_FontCache.obj : error LNK2019: símbolo externo TTF_WasInit sin resolver al que se hace referencia en la función FC_LoadFont_RW
+sound.obj : error LNK2019: símbolo externo SDL_OpenAudio sin resolver al que se hace referencia en la función "void __cdecl Sound_Init(void)" (?Sound_Init@@YAXXZ)
+sound.obj : error LNK2019: símbolo externo SDL_PauseAudio sin resolver al que se hace referencia en la función "void __cdecl Sound_Init(void)" (?Sound_Init@@YAXXZ)
+sound.obj : error LNK2019: símbolo externo SDL_LockAudio sin resolver al que se hace referencia en la función "void __cdecl Sound_Lock(void)" (?Sound_Lock@@YAXXZ)
+sound.obj : error LNK2019: símbolo externo SDL_UnlockAudio sin resolver al que se hace referencia en la función "void __cdecl Sound_Unlock(void)" (?Sound_Unlock@@YAXXZ)
+sprites.obj : error LNK2019: símbolo externo IMG_Quit sin resolver al que se hace referencia en la función "public: __cdecl Sprite::~Sprite(void)" (??1Sprite@@QEAA@XZ)
+sprites.obj : error LNK2019: símbolo externo IMG_Load sin resolver al que se hace referencia en la función "private: struct Frame * __cdecl Sprite::CreateFrame(char const *)" (?CreateFrame@Sprite@@AEAAPEAUFrame@@PEBD@Z)
+video.obj : error LNK2019: símbolo externo SDL_SetMainReady sin resolver al que se hace referencia en la función "public: __cdecl Screen::Screen(unsigned int,unsigned int)" (??0Screen@@QEAA@II@Z)
+main.obj : error LNK2001: símbolo externo SDL_SetMainReady sin resolver
+video.obj : error LNK2019: símbolo externo SDL_CreateWindow sin resolver al que se hace referencia en la función "private: void __cdecl Screen::init(int,int,bool)" (?init@Screen@@AEAAXHH_N@Z)
+video.obj : error LNK2019: símbolo externo SDL_ShowWindow sin resolver al que se hace referencia en la función "public: void __cdecl Screen::show(void)" (?show@Screen@@QEAAXXZ)
+video.obj : error LNK2019: símbolo externo SDL_DestroyWindow sin resolver al que se hace referencia en la función "public: __cdecl Screen::~Screen(void)" (??1Screen@@QEAA@XZ)
+video.obj : error LNK2019: símbolo externo SDL_PollEvent sin resolver al que se hace referencia en la función "private: void __cdecl Screen::processEventSystem(void)" (?processEventSystem@Screen@@AEAAXXZ)
+video.obj : error LNK2019: símbolo externo SDL_CreateRenderer sin resolver al que se hace referencia en la función "private: void __cdecl Screen::init(int,int,bool)" (?init@Screen@@AEAAXHH_N@Z)
+video.obj : error LNK2019: símbolo externo SDL_RenderPresent sin resolver al que se hace referencia en la función "private: void __cdecl Screen::flip(void)" (?flip@Screen@@AEAAXXZ)
+video.obj : error LNK2019: símbolo externo SDL_DestroyRenderer sin resolver al que se hace referencia en la función "public: __cdecl Screen::~Screen(void)" (??1Screen@@QEAA@XZ)
+video.obj : error LNK2019: símbolo externo SDL_Init sin resolver al que se hace referencia en la función "public: __cdecl Screen::Screen(unsigned int,unsigned int)" (??0Screen@@QEAA@II@Z)
+main.obj : error LNK2001: símbolo externo SDL_Init sin resolver
+video.obj : error LNK2019: símbolo externo SDL_Quit sin resolver al que se hace referencia en la función "public: __cdecl Screen::~Screen(void)" (??1Screen@@QEAA@XZ)
+main.obj : error LNK2001: símbolo externo SDL_Quit sin resolver
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\2. Platforms\0. Windows Desktop\\extlibs\SDL2.lib : warning LNK4272: el tipo de máquina de biblioteca 'x86' está en conflicto con el tipo de máquina de destino 'x64'
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\2. Platforms\0. Windows Desktop\\extlibs\SDL2_image.lib : warning LNK4272: el tipo de máquina de biblioteca 'x86' está en conflicto con el tipo de máquina de destino 'x64'
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\2. Platforms\0. Windows Desktop\\extlibs\SDL2_ttf.lib : warning LNK4272: el tipo de máquina de biblioteca 'x86' está en conflicto con el tipo de máquina de destino 'x64'
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\2. Platforms\0. Windows Desktop\\extlibs\libpng16.lib : warning LNK4272: el tipo de máquina de biblioteca 'x86' está en conflicto con el tipo de máquina de destino 'x64'
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\2. Platforms\0. Windows Desktop\\Program\MP_Practica.exe : fatal error LNK1120: 65 externos sin resolver
