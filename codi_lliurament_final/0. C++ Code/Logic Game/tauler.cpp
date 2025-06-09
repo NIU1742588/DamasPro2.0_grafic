@@ -10,7 +10,7 @@ void Tauler::inicialitza(const string& nomFitxer)
         {
             Posicio pos(fila, col);  // Cada casella té la seva posició correcta
             
-            m_tauler[fila][col] = Fitxa(COLOR_BLANC, TIPUS_EMPTY, pos);
+            m_tauler[fila][col] = Fitxa(COLOR_EMPTY, TIPUS_EMPTY, pos);
         }
     }
 
@@ -157,9 +157,13 @@ void Tauler::visualitza(const vector<Posicio>& movimentsValids) const {
 
 bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
 {
+
     // Comprova que origen o destí siguin posicions vàlides
     if (!origen.EsPosicioValida() || !desti.EsPosicioValida())
+    {
+		cout << "Posició no vàlida: origen o destí fora del tauler." << endl;
         return false;
+    }
 
     int filaOrigen = origen.getFila();
     int colOrigen = origen.getColumna();
@@ -169,9 +173,13 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
     Fitxa& fitxaOrigen = m_tauler[filaOrigen][colOrigen];
     Fitxa& fitxaDesti = m_tauler[filaDesti][colDesti];
 
+
     // Comprova que l'origen no estigui buit o que al destí hi hagi fitxa
     if (fitxaOrigen.getTipus() == TIPUS_EMPTY || fitxaDesti.getTipus() != TIPUS_EMPTY)
+    {
+		cout << "Moviment no vàlid: origen buit o destí ocupat." << endl;
         return false;
+    }
 
     // Obtenció dels moviments vàlids de la fitxa
     const Moviment& movsValidsFitxa = fitxaOrigen.getMovsValids();
@@ -186,6 +194,8 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
         // Marca que si es vàlid i hi ha captura
 		const Posicio& mov = movsValidsFitxa.getMoviment(i);
 
+		cout << "Comprovant moviment vàlid: " << mov.toString() << endl;
+
         if (mov.getFila() == filaDesti && mov.getColumna() == colDesti)
         {
             movValid = true;
@@ -195,7 +205,11 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
         }
     }
 
-    if (!movValid) return false;
+    if (!movValid) 
+    {
+		cout << "Moviment no valid: la fitxa no pot moures a aquesta posicio." << endl;
+        return false;
+    }
 
     bool altresFitxesCaptura = false;
     for (int fil = 0; fil < N_FILES && !altresFitxesCaptura; fil++) {
@@ -307,7 +321,7 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
     }
 
     // Torna a actualitzar tots els moviments
-    //actualitzaMovimentsValids();
+    actualitzaMovimentsValids();
 
     return true;
 }

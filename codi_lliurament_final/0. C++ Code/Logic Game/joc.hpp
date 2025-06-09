@@ -46,10 +46,10 @@ private:
     Posicio m_fitxaSeleccionada;
     bool m_teSeleccio;
     vector<Posicio> m_movimentsValids;
+    bool m_finalitzaCridat;
 
-    // Atributos específicos para modo REPLAY
-    vector<Moviment> m_movimentsReplay;
-    int m_indexReplay;
+	string m_nomFitxerMoviments;  // Nom del fitxer per guardar moviments en mode normal
+
 
     // Métodos auxiliares
     void processaSeleccio(const Posicio& pos);

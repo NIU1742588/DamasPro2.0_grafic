@@ -17,7 +17,7 @@ const int NUM_COLS_TAULER = 8;
 const int NUM_FILES_TAULER = 8;
 
 const int TAMANY_PANTALLA_X = 750;
-const int TAMANY_PANTALLA_Y = 850;
+const int TAMANY_PANTALLA_Y = 700;
 
 typedef enum 
 {

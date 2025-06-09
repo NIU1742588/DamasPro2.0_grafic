@@ -1,1 +1,9 @@
-﻿  MP_Practica.vcxproj -> C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\2. Platforms\0. Windows Desktop\Program\MP_Practica.exe
+﻿  CuaMoviments.cpp
+  joc.cpp
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Logic Game\joc.cpp(109,85): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Logic Game\joc.cpp(109,82): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+  main.cpp
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Logic Game\main.cpp(75,70): warning C4244: 'argumento': conversión de 'int' a 'float'; posible pérdida de datos
+C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\0. C++ Code\Logic Game\main.cpp(76,88): warning C4244: 'argumento': conversión de 'double' a 'float'; posible pérdida de datos
+  Generando código...
+  MP_Practica.vcxproj -> C:\Users\pruiz\Escritorio\UNI - Ing Inf\MP\codi_lliurament_final\2. Platforms\0. Windows Desktop\Program\MP_Practica.exe

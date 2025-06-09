@@ -17,6 +17,7 @@ typedef enum
 {
 	COLOR_NEGRE,
 	COLOR_BLANC,
+	COLOR_EMPTY
 } ColorFitxa;
 
 class Fitxa {
@@ -27,7 +28,7 @@ private:
 	Moviment m_movsValids;
 
 public:
-	Fitxa() { m_tipus = TIPUS_EMPTY; m_color = COLOR_BLANC;};
+	Fitxa() { m_tipus = TIPUS_EMPTY; m_color = COLOR_EMPTY;};
 	Fitxa(ColorFitxa color, TipusFitxa tipus, Posicio pos) : m_color(color), m_tipus(tipus), m_pos(pos) {};
 
 	ColorFitxa getColor() const { return m_color; };
@@ -41,7 +42,7 @@ public:
 	void actualitzaMoviments(const Fitxa tauler[][N_COLUMNES]); //Acutualitza els moviements d'una fitxa --> actualitzaMovimentsValids();
 
 	//Elimina una fitxa si l'han matat
-	void eliminaFitxa() {m_tipus = TIPUS_EMPTY;}
+	void eliminaFitxa() { m_tipus = TIPUS_EMPTY; m_color = COLOR_EMPTY; }
 
 	// Converteix la fitxa en una Damisela
 	void coronacio() {m_tipus = TIPUS_DAMA;}

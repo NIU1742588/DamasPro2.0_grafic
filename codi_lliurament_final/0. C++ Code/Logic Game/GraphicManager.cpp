@@ -78,6 +78,15 @@ string GraphicManager::getImagePath(IMAGE_NAME name){
         case GRAFIC_DAMA_NEGRA:
             path = "data/Fitxes/dama_negra.png";
             break;
+        case GRAFIC_POTATO_GOOD:
+			path = "data/img/potato_good.png";
+			break;
+		case GRAFIC_WILL_GAMBIT:
+			path = "data/img/will_gambit.png";
+			break;
+		case GRAFIC_REI_ENIGMA:
+			path = "data/img/rei_enigma.png";
+			break;
         default:
             path = "";
             break;

@@ -65,7 +65,6 @@ void Fitxa::actualitzaMoviments(const Fitxa tauler[][N_COLUMNES])
             // Afegeix el moviment
             if (Posicio(novaFil, novaCol).EsPosicioValida() && tauler[novaFil][novaCol].getTipus() == TIPUS_EMPTY && !m_movsValids.contePosicio(Posicio(novaFil, novaCol)))
             {
-                cout << "Moviment simple valid: " << m_pos.toString() << " -> " << Posicio(novaFil, novaCol).toString() << endl;
                 m_movsValids.afegeixMoviment(Posicio(novaFil, novaCol));
             }
             
@@ -107,7 +106,6 @@ void Fitxa::actualitzaMoviments(const Fitxa tauler[][N_COLUMNES])
                         {
                             Posicio novaPos(filFinal, colFinal);
 
-							cout << "Nova Posicio: " << novaPos.toString() << endl;
 
                             // Verifiquem si la nova posició ja ha estat visitada
                             bool jaVisitada = false;
@@ -123,8 +121,6 @@ void Fitxa::actualitzaMoviments(const Fitxa tauler[][N_COLUMNES])
 							// Si no ha estat visitada, afegim el moviment
                             if (!jaVisitada) 
                             {
-								cout << "Captura valida: " << tauler[filInter][colInter].getPosicio().toString() << endl;
-                                cout << "Moviment valid: " << novaPos.toString() << endl;
 
 								Posicio captura = tauler[filInter][colInter].getPosicio();
                                 
