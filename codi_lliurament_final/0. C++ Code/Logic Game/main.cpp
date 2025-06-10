@@ -94,8 +94,8 @@ int main(int argc, const char* argv[])
         // Dibuixa botó REPETICIÓ
         FONT_NAME colorReplay = hoverReplay ? FONT_RED_30 : FONT_WHITE_30;
         GraphicManager::getInstance()->drawFont(colorReplay,
-            POS_X_BOTO + (AMPLADA_BOTO-150) / 2,
-            POS_Y_BOTO_REPLAY + (ALCADA_BOTO-50) / 2,
+            POS_X_BOTO + (AMPLADA_BOTO - 150) / 2,
+            POS_Y_BOTO_REPLAY + (ALCADA_BOTO - 50) / 2,
             true, "REPETICIO");
 
         GraphicManager::getInstance()->drawSprite(GRAFIC_WILL_GAMBIT, (TAMANY_PANTALLA_X - 300), TAMANY_PANTALLA_Y - 400);

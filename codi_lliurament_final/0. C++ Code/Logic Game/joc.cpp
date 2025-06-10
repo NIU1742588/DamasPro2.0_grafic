@@ -58,10 +58,10 @@ bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
 
         GraphicManager::getInstance()->drawSprite(GRAFIC_POTATO_GOOD, (TAMANY_PANTALLA_X - 450) / 2, TAMANY_PANTALLA_Y - 500);
 
-		GraphicManager::getInstance()->drawFont(FONT_WHITE_30,
-			(TAMANY_PANTALLA_X - 500) / 2,
-			200,
-			1.25, "Premi ESC per sortir");        
+        GraphicManager::getInstance()->drawFont(FONT_RED_30,
+            10,
+            TAMANY_PANTALLA_Y - 30,
+            0.5, "Premi ESC per sortir");
         return true;
     }
 

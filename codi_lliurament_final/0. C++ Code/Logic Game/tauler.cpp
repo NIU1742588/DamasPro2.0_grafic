@@ -184,9 +184,11 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
     // Obtenció dels moviments vàlids de la fitxa
     const Moviment& movsValidsFitxa = fitxaOrigen.getMovsValids();
 
+
     bool movValid = false;
     bool fitxaTeCaptura = false;
     int indexMoviment = -1;
+	vector<Posicio> movimentsCaptura;
 
     // Per cada moviment vàlid
     for (int i = 0; i < movsValidsFitxa.getNumMovs(); i++) {
@@ -199,8 +201,10 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
         if (mov.getFila() == filaDesti && mov.getColumna() == colDesti)
         {
             movValid = true;
-            fitxaTeCaptura = movsValidsFitxa.esCaptura();
 			indexMoviment = i;  // Guarda l'índex del moviment vàlid
+
+			movimentsCaptura = movsValidsFitxa.getMovimentsCaptura(i);
+            fitxaTeCaptura = !movimentsCaptura.empty();
 			break;  // No cal continuar comprovant altres moviments
         }
     }
@@ -235,34 +239,16 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
 
 	cout << "Te captura: " << (fitxaTeCaptura ? "Sí" : "No") << endl;
     if (fitxaTeCaptura) {
+        // Eliminar todas las fichas en las posiciones de captura
+        for (const Posicio& posCaptura : movimentsCaptura)
+        {
+            if (posCaptura.EsPosicioValida())
+            {
+                int filaCaptura = posCaptura.getFila();
+                int colCaptura = posCaptura.getColumna();
 
-        int distFila = filaDesti - filaOrigen;
-        int distCol = colDesti - colOrigen;
-
-        // Calcular posició de la fitxa capturada
-        int filaCaptura = filaOrigen + (distFila > 0 ? 1 : -1);
-        int colCaptura = colOrigen + (distCol > 0 ? 1 : -1);
-
-        // Per a moviments llargs (dames)
-        if (abs(distFila) > 2 || abs(distCol) > 2) {
-            // Calcular direcció
-            int dirFila = (distFila > 0) ? 1 : -1;
-            int dirCol = (distCol > 0) ? 1 : -1;
-
-            // Recórrer diagonal eliminant fitxes enemigues
-            int filaActual = filaOrigen + dirFila;
-            int colActual = colOrigen + dirCol;
-
-            while (filaActual != filaDesti && colActual != colDesti) {
-                if (m_tauler[filaActual][colActual].getTipus() != TIPUS_EMPTY) {
-                    m_tauler[filaActual][colActual].eliminaFitxa();
-                }
-                filaActual += dirFila;
-                colActual += dirCol;
+                m_tauler[filaCaptura][colCaptura].eliminaFitxa();
             }
-        }
-        else {  // Captura simple
-            m_tauler[filaCaptura][colCaptura].eliminaFitxa();
         }
     }
 
@@ -275,22 +261,26 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
 
     bool bufaFitxa = false;
 
-    // La fitxa pot fer una captura pero el moviment no inclou captura
-    if (movsValidsFitxa.esCaptura() && !fitxaTeCaptura)
+    if (movsValidsFitxa.esCaptura())
     {
-		cout << "Moviment vàlid però no captura: " << origen.toString() << " -> " << desti.toString() << endl;
-        bufaFitxa = true;
+
+        // La fitxa pot fer una captura pero el moviment no inclou captura
+        if (!fitxaTeCaptura) {
+
+		    cout << "Moviment vàlid però no captura: " << origen.toString() << " -> " << desti.toString() << endl;
+            bufaFitxa = true;
+        }
+        // Hi ha caputres disponibles per altres fitxes i no és dama
+        else if (!esCapturaMaxima(origen, desti)) {
+            cout << "Hi ha captures disponibles per altres fitxes: " << origen.toString() << " -> " << desti.toString() << endl;
+			bufaFitxa = true;
+        }
+
     }
     // La fitxa por fer una captura pero no captura el nombre màxim de fitxes
     else if (altresFitxesCaptura)
     {
 		cout << "Hi ha altres fitxes que poden capturar: " << origen.toString() << " -> " << desti.toString() << endl;
-        bufaFitxa = true;
-    }
-    // Hi ha caputres disponibles per altres fitxes i no és dama
-    else if (fitxaTeCaptura && !esCapturaMaxima(origen, desti))
-    {
-		cout << "Hi ha captures disponibles per altres fitxes: " << origen.toString() << " -> " << desti.toString() << endl;
         bufaFitxa = true;
     }
 
@@ -326,87 +316,30 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
     return true;
 }
 
-
-
-
 bool Tauler::esCapturaMaxima(const Posicio& origen, const Posicio& desti) const
 {
 
     int filaOrigen = origen.getFila();
     int colOrigen = origen.getColumna();
-    int filaDesti = desti.getFila();
-    int colDesti = desti.getColumna();
 
-    const Fitxa& fitxa = m_tauler[origen.getFila()][origen.getColumna()];
+    const Fitxa& fitxa = m_tauler[filaOrigen][colOrigen];
 	const Moviment& movs = fitxa.getMovsValids();
 
-    // Clacul de la distància
+    // Buscar capturas en el movimiento actual
     int capturesActuals = 0;
-    int distFila = filaDesti - filaOrigen;
-    int distCol = colDesti - colOrigen;
-    //int dirFila = (distFila > 0) ? 1 : -1;
-    //int dirCol = (distCol > 0) ? 1 : -1;
-    int dirFila = (distFila != 0) ? (distFila > 0 ? 1 : -1) : 0;
-    int dirCol = (distCol != 0) ? (distCol > 0 ? 1 : -1) : 0;
-
-    // Solo procesar si es movimiento diagonal válido
-    if (abs(distFila) != abs(distCol)) return false;
-
-    // Calcula la quantitat de captures que fa en el moviment original
-    int filaActual = filaOrigen + dirFila;
-    int colActual = colOrigen + dirCol;
-
-    // Es recorre la diagonal
-    while ((filaActual != filaDesti || colActual != colDesti) &&
-        filaActual >= 0 && filaActual < N_FILES &&
-        colActual >= 0 && colActual < N_COLUMNES)
-    {
-        // Si la cela no està buida
-        if (m_tauler[filaActual][colActual].getTipus() != TIPUS_EMPTY &&
-            m_tauler[filaActual][colActual].getColor() != fitxa.getColor()) 
-        {
-			capturesActuals++;
+    for (int i = 0; i < movs.getNumMovs(); i++) {
+        if (movs.getMoviment(i) == desti) {
+            capturesActuals = movs.getMovimentsCaptura(i).size();
+            break;
         }
-
-        filaActual += dirFila;
-        colActual += dirCol;
     }
 
-    // Trobar el màxim de captures possibles
+    // Encontrar máximo de capturas posibles
     int maxCaptures = 0;
     for (int i = 0; i < movs.getNumMovs(); i++) {
-        const Posicio& destiPossible = movs.getMoviment(i);
-
-        int distFilaPossible = destiPossible.getFila() - filaOrigen;
-        int distColPossible = destiPossible.getColumna() - colOrigen;
-        int dirFilaPossible = (distFilaPossible != 0) ? (distFilaPossible > 0 ? 1 : -1) : 0;
-        int dirColPossible = (distColPossible != 0) ? (distColPossible > 0 ? 1 : -1) : 0;
-
-        // Solo procesar movimientos diagonales válidos
-        if (abs(distFilaPossible) != abs(distColPossible)) continue;
-
-        int capturesPossibles = 0;
-        int filaActualPossible = filaOrigen + dirFilaPossible;
-        int colActualPossible = colOrigen + dirColPossible;
-
-        // Verificar límites en cada iteración
-        while ((filaActualPossible != destiPossible.getFila() ||
-            colActualPossible != destiPossible.getColumna()) &&
-            filaActualPossible >= 0 && filaActualPossible < N_FILES &&
-            colActualPossible >= 0 && colActualPossible < N_COLUMNES)
-        {
-            if (m_tauler[filaActualPossible][colActualPossible].getTipus() != TIPUS_EMPTY &&
-                m_tauler[filaActualPossible][colActualPossible].getColor() != fitxa.getColor() &&
-                (filaActualPossible != filaDesti || colActualPossible != colDesti))
-            {
-                capturesPossibles++;
-            }
-            filaActualPossible += dirFilaPossible;
-            colActualPossible += dirColPossible;
-        }
-
-        if (capturesPossibles > maxCaptures) {
-            maxCaptures = capturesPossibles;
+        int numCaptures = movs.getMovimentsCaptura(i).size();
+        if (numCaptures > maxCaptures) {
+            maxCaptures = numCaptures;
         }
     }
 

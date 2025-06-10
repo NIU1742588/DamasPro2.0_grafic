@@ -36,21 +36,21 @@ Fitxa Fitxa::llegeixFitxa(char& tipus, const string& posicioStr)
 }
 
 
-void escriureFitxa(const string& nomFitxer, char tipusFitxa, const Posicio& posicio) 
+void escriureFitxa(const string& nomFitxer, char tipusFitxa, const Posicio& posicio)
 {
-	ofstream fitxer(nomFitxer);
-	fitxer << tipusFitxa << ' ';
-	fitxer << posicio;
-	fitxer.close();
+    ofstream fitxer(nomFitxer);
+    fitxer << tipusFitxa << ' ';
+    fitxer << posicio;
+    fitxer.close();
 }
 
-void Fitxa::actualitzaMoviments(const Fitxa tauler[][N_COLUMNES]) 
+void Fitxa::actualitzaMoviments(const Fitxa tauler[][N_COLUMNES])
 {
 
     m_movsValids.clear();
 
     // Moviment de les fitxes normals
-    if (m_tipus == TIPUS_NORMAL) 
+    if (m_tipus == TIPUS_NORMAL)
     {
 
         int dirFil = (m_color == COLOR_BLANC) ? -1 : 1; // Blanc (Amunt) Negre (Avall)
@@ -67,263 +67,241 @@ void Fitxa::actualitzaMoviments(const Fitxa tauler[][N_COLUMNES])
             {
                 m_movsValids.afegeixMoviment(Posicio(novaFil, novaCol));
             }
-            
+
         }
 
-        bool potContinuar = true;
-        int filInicial = m_pos.getFila();
-        int colInicial = m_pos.getColumna();
+        struct State
+        {
+            Posicio pos;
+            vector<Posicio> captures;
+        };
 
-        vector<Posicio> posActuals = { m_pos };      // Posicions en aquesta iteració
-        vector<Posicio> novesPosicions;  // Posicions per a la següents iteració
+        vector<State> posActuals = { {m_pos, {}} };      // Posicions en aquesta iteració
+        vector<State> novesPosicions;  // Posicions per a la següents iteració
         vector<Posicio> posVisitades = { m_pos };    // Posicions ja processades 
 
-
-        while (potContinuar && !posActuals.empty()) 
+        bool potContinuar = true;
+        while (potContinuar && !posActuals.empty())
         {
             potContinuar = false;
+            novesPosicions.clear(); // Reinicialitza les noves posicions per a la següent iteració
 
-            for (const Posicio& posActual : posActuals) 
+            for (const State& estat : posActuals)
             {
-                int filActual = posActual.getFila(); 
-                int colActual = posActual.getColumna();
+                int filActual = estat.pos.getFila();
+                int colActual = estat.pos.getColumna();
 
-                //for (int dirFil : {-1, 1}) 
-                //{
-                    for (int dirCol : {-1, 1}) 
-                    {
-                        int filInter = filActual + dirFil;
-                        int colInter = colActual + dirCol;
-                        int filFinal = filInter + dirFil;
-                        int colFinal = colInter + dirCol;
+                for (int dirCol : {-1, 1})
+                {
+                    int filInter = filActual + dirFil;
+                    int colInter = colActual + dirCol;
+                    int filFinal = filInter + dirFil;
+                    int colFinal = colInter + dirCol;
 
-                        if (!Posicio(filInter, colInter).EsPosicioValida()) continue; 
-                        if (!Posicio(filFinal, colFinal).EsPosicioValida()) continue;
-
-                        if (tauler[filInter][colInter].getTipus() != TIPUS_EMPTY &&
-                            tauler[filInter][colInter].getColor() != m_color &&
-                            tauler[filFinal][colFinal].getTipus() == TIPUS_EMPTY)
-                        {
-                            Posicio novaPos(filFinal, colFinal);
+                    if (!Posicio(filInter, colInter).EsPosicioValida()) continue;
+                    if (!Posicio(filFinal, colFinal).EsPosicioValida()) continue;
 
 
-                            // Verifiquem si la nova posició ja ha estat visitada
-                            bool jaVisitada = false;
-                            int j = 0;
-
-							// Busquem si la nova posició ja ha estat visitada
-                            while (j < posVisitades.size() && !jaVisitada)
-                            {
-                                jaVisitada = (posVisitades[j] == novaPos);
-                                j++;
-                            }
-
-							// Si no ha estat visitada, afegim el moviment
-                            if (!jaVisitada) 
-                            {
-
-								Posicio captura = tauler[filInter][colInter].getPosicio();
-                                
-
-                               /* if (tauler[captura.getFila()][captura.getColumna()].getTipus() != TIPUS_EMPTY) {
-
-									cout << "Error: Captura no valida: " << captura.toString() << endl;
-                                    continue;
-
-                                }*/
-                                    m_movsValids.afegeixMoviment(novaPos);
-                                    m_movsValids.marcaComCaptura();
-
-                                    if (novesPosicions.size() < 20) {
-                                
-								        // Afegim la nova posició a les noves posicions
-                                        novesPosicions.push_back(novaPos);
-
-                                    }
-                                    posVisitades.push_back(novaPos); // Marquem com a visitada
-                                    potContinuar = true;
-
-                            }
+                    // Comprova si la peca intermitja es capturable
+                    bool jaCapturat = false;
+                    for (const Posicio& captura : estat.captures) {
+                        if (captura == Posicio(filInter, colInter)) {
+                            jaCapturat = true;
+                            break;
                         }
                     }
-                //}
+
+                    if (!jaCapturat &&
+                        tauler[filInter][colInter].getTipus() != TIPUS_EMPTY &&
+                        tauler[filInter][colInter].getColor() != m_color &&
+                        tauler[filFinal][colFinal].getTipus() == TIPUS_EMPTY)
+                    {
+                        Posicio novaPos(filFinal, colFinal);
+                        bool jaVisitada = false;
+
+                        for (const Posicio& visitada : posVisitades) {
+                            if (visitada == novaPos) {
+                                jaVisitada = true;
+                                break;
+                            }
+                        }
+
+                        if (!jaVisitada)
+                        {
+                            vector<Posicio> novesCaptures = estat.captures;
+                            novesCaptures.push_back(Posicio(filInter, colInter));
+
+                            // Registrar movimiento con capturas
+                            m_movsValids.afegeixMoviment(novaPos, novesCaptures);
+                            m_movsValids.marcaComCaptura();
+
+                            novesPosicions.push_back({ novaPos, novesCaptures });
+                            posVisitades.push_back(novaPos);
+                            potContinuar = true;
+                        }
+                    }
+                }
             }
-            
+
             posActuals = move(novesPosicions);
         }
 
         vector<Posicio> movimentsOk;
         Posicio previa(-1, -1);  // Posición previa inválida
 
-
-		//cout << "Moviments possibles: " << m_movsValids.getMoviments().size() << endl;
-		for (const Posicio& pos : m_movsValids.getMoviments())
-		{
-			TipusFitxa tipus = tauler[pos.getFila()][pos.getColumna()].getTipus();
-
-            // Elimina posicions on ja hi ha peces
-            if (tipus != TIPUS_EMPTY ) {
-                m_movsValids.eliminaMoviment(pos); // Elimina moviments que no són vàlids
-            }
-
-		}
-
-
     }
     // Movimients de les dames
-    else if (m_tipus == TIPUS_DAMA) 
+    else if (m_tipus == TIPUS_DAMA)
     {
-        vector<Posicio> posActuals = { m_pos };      // Posicions en aquesta iteració
-        vector<Posicio> novesPosicions;  // Posicions per a la següents iteració
+
+        struct State {
+            Posicio pos;
+            vector<Posicio> captures;
+            vector<Posicio> visited;
+        };
+
+        vector<State> posActuals = { {m_pos, {}, {m_pos}} };      // Posicions en aquesta iteració
+        vector<State> novesPosicions;  // Posicions per a la següents iteració
         vector<Posicio> posVisitades = { m_pos };    // Posicions ja processades 
         vector<Posicio> movimentsSimples;
-
         bool hiHaCaptures = false;
 
         // Recorre les diagonals
-        for (int dirFil : {-1, 1}) 
+        for (int dirFil : {-1, 1})
         {
-            for (int dirCol : {-1, 1}) 
+            for (int dirCol : {-1, 1})
             {
                 int distancia = 1;
                 bool trobadaFitxaOponent = false;
-                int filInter = -1, colInter = -1;
+                Posicio posInter;
 
                 // Fins que trobi una fitxa
-                while (!trobadaFitxaOponent && Posicio(m_pos.getFila() + dirFil * distancia, 
-                    m_pos.getColumna() + dirCol * distancia).EsPosicioValida())
-                {
-                    int novaFil = m_pos.getFila() + dirFil * distancia;
-                    int novaCol = m_pos.getColumna() + dirCol * distancia;
+                while (true) {
+                    int filTemp = m_pos.getFila() + dirFil * distancia;
+                    int colTemp = m_pos.getColumna() + dirCol * distancia;
+                    Posicio posActual(filTemp, colTemp);
 
-                    if (!Posicio(novaFil, novaCol).EsPosicioValida()) break;
+                    if (!posActual.EsPosicioValida()) break;
 
-                    // Si troba una fitxa i és de tipus diferent a buit
-                    if (tauler[novaFil][novaCol].getTipus() != TIPUS_EMPTY) 
-                    {
-                        // Si la fitxa és de color diferent i encara no s'havia trobat cap oponent
-                        if (tauler[novaFil][novaCol].getColor() != m_color && !trobadaFitxaOponent) 
-                        {
+                    // Si encontramos una ficha
+                    if (tauler[filTemp][colTemp].getTipus() != TIPUS_EMPTY) {
+                        // Si es del oponente y no hemos encontrado aún una ficha en esta dirección
+                        if (tauler[filTemp][colTemp].getColor() != m_color && !trobadaFitxaOponent) {
                             trobadaFitxaOponent = true;
-                            filInter = novaFil;
-                            colInter = novaCol;
+                            posInter = posActual;
+                        }
+                        else {
+                            // Si ya encontramos una ficha y hay otra, rompemos
+                            break;
                         }
                     }
-                    // Si no s'ha trobat cap fitxa oponent, s'afegeix la posició com a moviment vàlid
-                    else if (!trobadaFitxaOponent) 
-                    {
-						movimentsSimples.push_back(Posicio(novaFil, novaCol));
-                        //m_movsValids.afegeixMoviment(Posicio(novaFil, novaCol));
+                    else {
+                        // Si hay espacio vacío después de una ficha oponente, hay captura posible
+                        if (trobadaFitxaOponent) {
+                            hiHaCaptures = true;
+                            break;
+                        }
+                        else {
+                            // Si no hay capturas, registramos movimiento simple
+                            movimentsSimples.push_back(posActual);
+                        }
                     }
-
                     distancia++;
-                }
-
-                // Si es troba una fitxa
-                // Actualitza la posició final
-                if (trobadaFitxaOponent) 
-                {
-                    int filFinal = filInter + dirFil;
-                    int colFinal = colInter + dirCol;
-
-                    // Si la posició és vàlida i està buida
-                    // Indica que hi ha una captura
-                    if (Posicio(filFinal, colFinal).EsPosicioValida() && tauler[filFinal][colFinal].getTipus() == TIPUS_EMPTY)
-                        hiHaCaptures = true;
                 }
             }
         }
 
         // Si hi ha captures
-        if (hiHaCaptures) 
+        if (hiHaCaptures)
         {
 
             // Mentre hi hagi posicions
-            while (!posActuals.empty()) 
+            while (!posActuals.empty())
             {
 
                 novesPosicions.clear();
-                                
+
                 // Per cada posicio
                 //for (const Posicio posActual : posActuals)
-                for (size_t i = 0; i < posActuals.size(); i++)
+                for (const State& estat: posActuals)
                 {
-                    const Posicio& posActual = posActuals[i];
-
-                    for (int dirFil : {-1, 1}) 
+                    for (int dirFil : {-1, 1})
                     {
-                        for (int dirCol : {-1, 1}) 
+                        for (int dirCol : {-1, 1})
                         {
                             int distancia = 1;
                             bool trobadaFitxaOponent = false;
-                            int filInter = -1, colInter = -1;
+                            Posicio posInter;
+                            vector<Posicio> capturesInDirection;
 
                             // Fins que trobi una fitxa
-                            while (!trobadaFitxaOponent && Posicio(posActual.getFila() + dirFil * distancia,
-                                posActual.getColumna() + dirCol * distancia).EsPosicioValida())
-                            {
-                                int filTemp = posActual.getFila() + dirFil * distancia;
-                                int colTemp = posActual.getColumna() + dirCol * distancia;
+                            while (true) {
+                                int filTemp = estat.pos.getFila() + dirFil * distancia;
+                                int colTemp = estat.pos.getColumna() + dirCol * distancia;
+                                Posicio posActual(filTemp, colTemp);
 
-                                // Si troba una fitxa i no està buida
-                                //if (tauler[filTemp][colTemp].getTipus() != TIPUS_EMPTY) 
-                                if (tauler[filTemp][colTemp].getTipus() != TIPUS_EMPTY) 
-                                {
-                                    // Si la fitxa és de color diferent i encara no s'ha trobat cap oponent
-                                    if (tauler[filTemp][colTemp].getColor() != m_color && !trobadaFitxaOponent) 
-                                    {
-                                        trobadaFitxaOponent = true;
-                                        filInter = filTemp;
-                                        colInter = colTemp;
-                                    }
-                                }
-                                distancia++;
-                            }
+                                if (!posActual.EsPosicioValida()) break;
 
-                            // Si es troba una captura
-                            if (trobadaFitxaOponent) 
-                            {
-                                int filFinal = filInter + dirFil;
-                                int colFinal = colInter + dirCol;
-
-                                if (Posicio(filFinal, colFinal).EsPosicioValida() && tauler[filFinal][colFinal].getTipus() == TIPUS_EMPTY) 
-                                {
-
-                                    Posicio novaPos(filFinal, colFinal);
-                                    bool jaVisitada = false;
-
-                                    // Es verifica si ja està visitada
-                                    for (int j = 0; j < posVisitades.size(); j++)
-                                    {
-                                        if (posVisitades[j] == novaPos && !jaVisitada)
-                                            jaVisitada = true;
-                                    }
-
-                                    // Si no està visitada
-                                    // Afegeix el moviment, marca la caputra, l'afegeix a noves posicions i a posicions visitades
-                                    if (!jaVisitada) 
-                                    {
-                                        bool afegida = false;
-
-                                        // Es recorre tots els moviments ja afegits
-                                        for (int i = 0; i < m_movsValids.getNumMovs(); i++)
-                                        {
-                                            // Si el moviment ja es troba dins
-                                            if (m_movsValids.getMoviment(i) == novaPos)
-                                                afegida = true;
+                                // Si la casilla no está vacía
+                                if (tauler[filTemp][colTemp].getTipus() != TIPUS_EMPTY) {
+                                    // Verificamos si es capturable
+                                    if (tauler[filTemp][colTemp].getColor() != m_color && !trobadaFitxaOponent) {
+                                        // Comprobamos que no haya sido capturada ya en este camino
+                                        bool jaCapturat = false;
+                                        for (const Posicio& captura : estat.captures) {
+                                            if (captura == posActual) {
+                                                jaCapturat = true;
+                                                break;
+                                            }
                                         }
 
-                                        // Si no ha estat afegit
-                                        if (!afegida) 
-                                        {
-                                            m_movsValids.afegeixMoviment(novaPos);
+                                        if (!jaCapturat) {
+                                            trobadaFitxaOponent = true;
+                                            posInter = posActual;
+                                            capturesInDirection.push_back(posInter);
+                                        }
+                                        else {
+                                            // Ya capturada, pero seguimos buscando más allá
+                                        }
+                                    }
+                                    else {
+                                        // Es una ficha del mismo color o ya encontramos una ficha oponente en esta dirección
+                                        break;
+                                    }
+                                }
+                                else {
+                                    // Casilla vacía
+                                    if (trobadaFitxaOponent) {
+                                        // Este es un movimiento de captura válido
+                                        // Comprobar que no hemos visitado esta posición en el mismo camino
+                                        bool jaVisitada = false;
+                                        for (const Posicio& visitada : posVisitades) {
+                                            if (visitada == posActual) {
+                                                jaVisitada = true;
+                                                break;
+                                            }
+                                        }
+
+                                        if (!jaVisitada) {
+                                            // Añadimos las capturas de este salto
+                                            vector<Posicio> novesCaptures = estat.captures;
+                                            novesCaptures.insert(novesCaptures.end(), capturesInDirection.begin(), capturesInDirection.end());
+
+                                            // Añadimos el movimiento
+                                            m_movsValids.afegeixMoviment(posActual, novesCaptures);
                                             m_movsValids.marcaComCaptura();
-                                        }
 
-										novesPosicions.push_back(novaPos);
-										posVisitades.push_back(novaPos);
+                                            // Preparamos el nuevo estado para continuar saltando
+                                            State nouEstat;
+                                            nouEstat.pos = posActual;
+                                            nouEstat.captures = novesCaptures;
+                                            novesPosicions.push_back(nouEstat);
+                                            posVisitades.push_back(posActual);
+                                        }
                                     }
                                 }
+                                
+                                distancia++;
                             }
                         }
                     }
@@ -335,16 +313,23 @@ void Fitxa::actualitzaMoviments(const Fitxa tauler[][N_COLUMNES])
         }
         else
         {
-			// Si no hi ha captures, s'afegeixen els moviments simples
-			for (const Posicio& pos : movimentsSimples)
-			{
-				m_movsValids.afegeixMoviment(pos);
-			}
+            // Si no hi ha captures, s'afegeixen els moviments simples
+            for (const Posicio& pos : movimentsSimples)
+            {
+                m_movsValids.afegeixMoviment(pos);
+            }
         }
 
+        // Eliminar posiciones donde ya hay piezas (solo para movimientos simples)
+        if (!hiHaCaptures) {
+            for (int i = m_movsValids.getNumMovs() - 1; i >= 0; i--) {
+                Posicio pos = m_movsValids.getMoviment(i);
+                if (tauler[pos.getFila()][pos.getColumna()].getTipus() != TIPUS_EMPTY) {
+                    m_movsValids.eliminaMoviment(pos);
+                }
+            }
+        }
     }
-
-
 }
 
 void Fitxa::visualitza(int posX, int posY) const {
@@ -352,12 +337,12 @@ void Fitxa::visualitza(int posX, int posY) const {
     IMAGE_NAME sprite = GRAFIC_NUM_MAX;
 
     switch (m_tipus) {
-        case TIPUS_NORMAL:
-            sprite = (m_color == COLOR_BLANC) ? GRAFIC_FITXA_BLANCA : GRAFIC_FITXA_NEGRA;
-            break;
-        case TIPUS_DAMA:
-            sprite = (m_color == COLOR_BLANC) ? GRAFIC_DAMA_BLANCA : GRAFIC_DAMA_NEGRA;
-            break;
+    case TIPUS_NORMAL:
+        sprite = (m_color == COLOR_BLANC) ? GRAFIC_FITXA_BLANCA : GRAFIC_FITXA_NEGRA;
+        break;
+    case TIPUS_DAMA:
+        sprite = (m_color == COLOR_BLANC) ? GRAFIC_DAMA_BLANCA : GRAFIC_DAMA_NEGRA;
+        break;
     default:
         break;
     }
