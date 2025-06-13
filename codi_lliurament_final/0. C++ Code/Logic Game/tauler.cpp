@@ -163,7 +163,7 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
         return false;
     }
     int filaOrigen = origen.getFila(), colOrigen = origen.getColumna();
-    int filaDesti = desti .getFila(), colDesti = desti .getColumna();
+    int filaDesti = desti.getFila(), colDesti = desti.getColumna();
 
     Fitxa& fitxaOrigen = m_tauler[filaOrigen][colOrigen];
     Fitxa& fitxaDesti = m_tauler[filaDesti][colDesti];
@@ -212,11 +212,16 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
         }
     }
 
+    cout << fitxaOrigen.getPosicio().toString() << " -> " << fitxaDesti.getPosicio().toString() << endl;
+
     // Moure i eliminar captures inicials
     fitxaDesti = fitxaOrigen;
     fitxaDesti.setPosicio(desti);
     fitxaOrigen.eliminaFitxa();
     for (const Posicio& p : capsTriades) {
+        if (m_tauler[p.getFila()][p.getColumna()].getTipus() != TIPUS_EMPTY)
+            cout << "Eliminacio -> " << p.toString() << endl;
+
         m_tauler[p.getFila()][p.getColumna()].eliminaFitxa();
     }
 
@@ -226,6 +231,7 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
         (fitxaDesti.getColor()==COLOR_NEGRE && filaDesti==N_FILES-1)))
     {
         fitxaDesti.coronacio();
+        cout << "Coronacio -> " << fitxaDesti.getPosicio().toString() << endl;
     }
 
     // Lògica de bufar:
@@ -261,23 +267,28 @@ bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
     // Eliminar la peça corresponent
     if (bufaFitxa) {
         bool eliminada = false;
-        for (int r = 0; r < N_FILES && !eliminada; ++r) {
-            for (int c = 0; c < N_COLUMNES && !eliminada; ++c) {
-                Fitxa& fx = m_tauler[r][c];
-                if (fx.getTipus()!=TIPUS_EMPTY &&
-                    fx.getColor()==fitxaDesti.getColor() &&
-                    !(r==filaDesti && c==colDesti) &&
-                    fx.getMovsValids().esCaptura())
+        for (int row = 0; row < N_FILES && !eliminada; ++row) {
+            for (int col = 0; col < N_COLUMNES && !eliminada; ++col) {
+                Fitxa& fitxa = m_tauler[row][col];
+                if (fitxa.getTipus()!=TIPUS_EMPTY &&
+                    fitxa.getColor()==fitxaDesti.getColor() &&
+                    !(row==filaDesti && col==colDesti) &&
+                    fitxa.getMovsValids().esCaptura())
                 {
-                    fx.eliminaFitxa();
+                    cout << "Bufada -> " << fitxa.getPosicio().toString() << endl;
+                    fitxa.eliminaFitxa();
                     eliminada = true;
                 }
             }
         }
         if (!eliminada && fitxaDesti.getTipus()==TIPUS_NORMAL) {
+            cout << "Bufada -> " << fitxaOrigen.getPosicio().toString() << endl;
             fitxaDesti.eliminaFitxa();
         }
     }
+
+
+
 
     actualitzaMovimentsValids();
 

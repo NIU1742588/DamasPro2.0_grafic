@@ -248,8 +248,8 @@ void Joc::comprovaFiPartida() {
         m_guanyador = (blanques > 0) ? C_BLANC : C_NEGRE;
 
         // Mostrar resultat en consola
-        string guanyador = (m_guanyador == C_BLANC) ? "EUROPEUS" : "NIGERIANS";
-        cout << "PARTIDA FINALITZADA! Guanyen els " << guanyador << endl;
+        string guanyador = (m_guanyador == C_BLANC) ? "BLANQUES"  : "NEGRES";
+        cout << "PARTIDA FINALITZADA! Guanyen les " << guanyador << endl;
     }
 }
 
