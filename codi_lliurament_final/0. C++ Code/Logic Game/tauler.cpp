@@ -1,4 +1,4 @@
-#include "tauler.hpp"
+ï»¿#include "tauler.hpp"
 
 void Tauler::inicialitza(const string& nomFitxer)
 {
@@ -8,7 +8,7 @@ void Tauler::inicialitza(const string& nomFitxer)
     {
         for (int col = 0; col < N_COLUMNES; col++) 
         {
-            Posicio pos(fila, col);  // Cada casella té la seva posició correcta
+            Posicio pos(fila, col);  // Cada casella tÃ© la seva posiciÃ³ correcta
             
             m_tauler[fila][col] = Fitxa(COLOR_EMPTY, TIPUS_EMPTY, pos);
         }
@@ -134,14 +134,14 @@ void Tauler::stringToPosicio(const string& posicio, int& fila, int& columna)
 {} //No Necessaria
 
 void Tauler::visualitza(const vector<Posicio>& movimentsValids) const {
-    // Dibujar movimientos válidos primero (como fondo)
+    // Dibuixa els moviments vÃ lids primer
     for (const auto& pos : movimentsValids) {
         int x = POS_X_TAULER + CASELLA_INICIAL_X + pos.getColumna() * AMPLADA_CASELLA;
         int y = POS_Y_TAULER + CASELLA_INICIAL_Y + pos.getFila() * ALCADA_CASELLA;
         GraphicManager::getInstance()->drawSprite(GRAFIC_POSICIO_VALIDA, x, y);
     }
 
-    // Dibujar todas las piezas
+    // Dibuixa totes les fitxes
     for (int fila = 0; fila < N_FILES; fila++) {
         for (int col = 0; col < N_COLUMNES; col++) {
             const Fitxa& fitxa = m_tauler[fila][col];
@@ -157,164 +157,135 @@ void Tauler::visualitza(const vector<Posicio>& movimentsValids) const {
 
 bool Tauler::mouFitxa(const Posicio& origen, const Posicio& desti)
 {
-
-    // Comprova que origen o destí siguin posicions vàlides
-    if (!origen.EsPosicioValida() || !desti.EsPosicioValida())
-    {
-		cout << "Posició no vàlida: origen o destí fora del tauler." << endl;
+    // Valida les posicions
+    if (!origen.EsPosicioValida() || !desti.EsPosicioValida()) {
+        cout << "PosiciÃ³ no vÃ lida: fora del tauler.\n";
         return false;
     }
-
-    int filaOrigen = origen.getFila();
-    int colOrigen = origen.getColumna();
-    int filaDesti = desti.getFila();
-    int colDesti = desti.getColumna();
+    int filaOrigen = origen.getFila(), colOrigen = origen.getColumna();
+    int filaDesti = desti .getFila(), colDesti = desti .getColumna();
 
     Fitxa& fitxaOrigen = m_tauler[filaOrigen][colOrigen];
     Fitxa& fitxaDesti = m_tauler[filaDesti][colDesti];
 
-
-    // Comprova que l'origen no estigui buit o que al destí hi hagi fitxa
-    if (fitxaOrigen.getTipus() == TIPUS_EMPTY || fitxaDesti.getTipus() != TIPUS_EMPTY)
-    {
-		cout << "Moviment no vàlid: origen buit o destí ocupat." << endl;
+    // Origen ha de tenir fitxa i destÃ­ ha d'estar buit
+    if (fitxaOrigen.getTipus() == TIPUS_EMPTY || fitxaDesti.getTipus() != TIPUS_EMPTY) {
+        cout << "Moviment no vÃ lid: origen buit o destÃ­ ocupat.\n";
         return false;
     }
 
-    // Obtenció dels moviments vàlids de la fitxa
-    const Moviment& movsValidsFitxa = fitxaOrigen.getMovsValids();
-
-
+    // Recupera els moviments valids abans de moure la fitxa:
+    //    - maxCap: Quantes captures tÃ© el millor moviment
+    //    - capsTriades: Quantes captures fa la jugada escollida
+    const Moviment& movsOrigen = fitxaOrigen.getMovsValids();
+    int  maxCap = 0;
     bool movValid = false;
-    bool fitxaTeCaptura = false;
-    int indexMoviment = -1;
-	vector<Posicio> movimentsCaptura;
+    vector<Posicio> capsTriades;
 
-    // Per cada moviment vàlid
-    for (int i = 0; i < movsValidsFitxa.getNumMovs(); i++) {
-        // Si el destí està dins els moviments vàlids
-        // Marca que si es vàlid i hi ha captura
-		const Posicio& mov = movsValidsFitxa.getMoviment(i);
-
-		cout << "Comprovant moviment vàlid: " << mov.toString() << endl;
-
-        if (mov.getFila() == filaDesti && mov.getColumna() == colDesti)
-        {
-            movValid = true;
-			indexMoviment = i;  // Guarda l'índex del moviment vàlid
-
-			movimentsCaptura = movsValidsFitxa.getMovimentsCaptura(i);
-            fitxaTeCaptura = !movimentsCaptura.empty();
-			break;  // No cal continuar comprovant altres moviments
+    for (int i = 0; i < movsOrigen.getNumMovs(); ++i) {
+        int c_movs = (int)movsOrigen.getMovimentsCaptura(i).size();
+        if (c_movs > maxCap) maxCap = c_movs;
+        const Posicio& landing = movsOrigen.getMoviment(i);
+        if (landing == desti) {
+            movValid    = true;
+            capsTriades = movsOrigen.getMovimentsCaptura(i);
         }
     }
-
-    if (!movValid) 
-    {
-		cout << "Moviment no valid: la fitxa no pot moures a aquesta posicio." << endl;
+    bool fitxaTeCaptura = !capsTriades.empty();
+    if (!movValid) {
+        cout << "Moviment no vÃ lid: no pot anar a " << desti.toString() << ".\n";
         return false;
     }
 
-    bool altresFitxesCaptura = false;
-    for (int fil = 0; fil < N_FILES && !altresFitxesCaptura; fil++) {
-        for (int col = 0; col < N_COLUMNES && !altresFitxesCaptura; col++) {
-            
-            if (m_tauler[fil][col].getTipus() != TIPUS_EMPTY &&
-                m_tauler[fil][col].getColor() == fitxaOrigen.getColor() &&
-                !(fil == filaOrigen && col == colOrigen))
+    // Comprovar si hi ha altres fitxes que podien capturar
+    bool altresCapt = false;
+    for (int row = 0; row < N_FILES && !altresCapt; ++row) {
+        for (int col = 0; col < N_COLUMNES && !altresCapt; ++col) {
+            const Fitxa& f2 = m_tauler[row][col];
+            if (f2.getTipus() != TIPUS_EMPTY &&
+                f2.getColor() == fitxaOrigen.getColor() &&
+                !(row==filaOrigen && col==colOrigen) &&
+                f2.getMovsValids().esCaptura())
             {
-
-                const Moviment& movs = m_tauler[fil][col].getMovsValids();
-                if (movs.esCaptura() && !fitxaTeCaptura) {
-                    altresFitxesCaptura = true;
-                }
+                altresCapt = true;
             }
         }
     }
 
-
+    // Moure i eliminar captures inicials
     fitxaDesti = fitxaOrigen;
-	fitxaDesti.setPosicio(desti);
+    fitxaDesti.setPosicio(desti);
     fitxaOrigen.eliminaFitxa();
-
-	cout << "Te captura: " << (fitxaTeCaptura ? "Sí" : "No") << endl;
-    if (fitxaTeCaptura) {
-        // Eliminar todas las fichas en las posiciones de captura
-        for (const Posicio& posCaptura : movimentsCaptura)
-        {
-            if (posCaptura.EsPosicioValida())
-            {
-                int filaCaptura = posCaptura.getFila();
-                int colCaptura = posCaptura.getColumna();
-
-                m_tauler[filaCaptura][colCaptura].eliminaFitxa();
-            }
-        }
+    for (const Posicio& p : capsTriades) {
+        m_tauler[p.getFila()][p.getColumna()].eliminaFitxa();
     }
 
-    // En cas que la fitxa es trobi a l'extrem contrari, la transforma en dama
-	if (fitxaDesti.getTipus() == TIPUS_NORMAL &&
-        (fitxaDesti.getColor() == COLOR_BLANC && filaDesti == 0) ||
-        (fitxaDesti.getColor() == COLOR_NEGRE && filaDesti == N_FILES - 1)) {
+    // CoronaciÃ³ si toca
+    if (fitxaDesti.getTipus() == TIPUS_NORMAL &&
+       ((fitxaDesti.getColor()==COLOR_BLANC && filaDesti==0) ||
+        (fitxaDesti.getColor()==COLOR_NEGRE && filaDesti==N_FILES-1)))
+    {
         fitxaDesti.coronacio();
     }
 
+    // LÃ²gica de bufar:
+    //    Si podia capturar (maxCap>0) perÃ²:
+    //      Â· no ho fa -> bufa
+    //      Â· tampoc encadena mÃ©s des del destÃ­ -> bufa
+    //      Â· no tria la millor seqÃ¼Ã¨ncia -> bufa
+    //    o (altresCapt) -> bufa
     bool bufaFitxa = false;
-
-    if (movsValidsFitxa.esCaptura())
-    {
-
-        // La fitxa pot fer una captura pero el moviment no inclou captura
+    if (maxCap > 0) {
+        // Pot caputrar i no ho fa
         if (!fitxaTeCaptura) {
-
-		    cout << "Moviment vàlid però no captura: " << origen.toString() << " -> " << desti.toString() << endl;
             bufaFitxa = true;
         }
-        // Hi ha caputres disponibles per altres fitxes i no és dama
-        else if (!esCapturaMaxima(origen, desti)) {
-            cout << "Hi ha captures disponibles per altres fitxes: " << origen.toString() << " -> " << desti.toString() << endl;
-			bufaFitxa = true;
+        else {
+            // recalculem moviments un cop ja hem mogut per comprovar encadenament
+            actualitzaMovimentsValids();
+            const Moviment& movsD = m_tauler[filaDesti][colDesti].getMovsValids();
+            // No encadena mÃ©s del del destÃ­
+            if (movsD.esCaptura()) {
+                bufaFitxa = true;
+            }
+            // no tria la millor secuencia
+            else if ((int)capsTriades.size() < maxCap) {
+                bufaFitxa = true;
+            }
         }
-
     }
-    // La fitxa por fer una captura pero no captura el nombre màxim de fitxes
-    else if (altresFitxesCaptura)
-    {
-		cout << "Hi ha altres fitxes que poden capturar: " << origen.toString() << " -> " << desti.toString() << endl;
+    else if (altresCapt) {
         bufaFitxa = true;
     }
-
-
+    
+    // Eliminar la peÃ§a corresponent
     if (bufaFitxa) {
-        bool fitxaEliminada = false;
-
-        // Es recorre el taulell
-        for (int fil = 0; fil < N_FILES && !fitxaEliminada; fil++) {
-            for (int col = 0; col < N_COLUMNES && !fitxaEliminada; col++) {
-
-                // Si hi ha fitxa, és del mateix color, no és la posició destí i té captura
-                if (m_tauler[fil][col].getTipus() != TIPUS_EMPTY &&
-                    m_tauler[fil][col].getColor() == fitxaDesti.getColor() &&
-                    !(fil == filaDesti && col == colDesti) &&
-                    m_tauler[fil][col].getMovsValids().esCaptura()) {
-
-                    m_tauler[fil][col].eliminaFitxa();
-                    fitxaEliminada = true;
+        bool eliminada = false;
+        for (int r = 0; r < N_FILES && !eliminada; ++r) {
+            for (int c = 0; c < N_COLUMNES && !eliminada; ++c) {
+                Fitxa& fx = m_tauler[r][c];
+                if (fx.getTipus()!=TIPUS_EMPTY &&
+                    fx.getColor()==fitxaDesti.getColor() &&
+                    !(r==filaDesti && c==colDesti) &&
+                    fx.getMovsValids().esCaptura())
+                {
+                    fx.eliminaFitxa();
+                    eliminada = true;
                 }
             }
         }
-
-        // Si no ha bufat cap fitxa i la moguda no és dama
-        if (!fitxaEliminada && fitxaDesti.getTipus() == TIPUS_NORMAL) {
+        if (!eliminada && fitxaDesti.getTipus()==TIPUS_NORMAL) {
             fitxaDesti.eliminaFitxa();
         }
     }
 
-    // Torna a actualitzar tots els moviments
     actualitzaMovimentsValids();
 
-    return true;
+    return (int)capsTriades.size() >= maxCap;
 }
+
+
+
 
 bool Tauler::esCapturaMaxima(const Posicio& origen, const Posicio& desti) const
 {
@@ -329,15 +300,15 @@ bool Tauler::esCapturaMaxima(const Posicio& origen, const Posicio& desti) const
     int capturesActuals = 0;
     for (int i = 0; i < movs.getNumMovs(); i++) {
         if (movs.getMoviment(i) == desti) {
-            capturesActuals = movs.getMovimentsCaptura(i).size();
+            capturesActuals = (int)movs.getMovimentsCaptura(i).size();
             break;
         }
     }
 
-    // Encontrar máximo de capturas posibles
+    // Troba el mÃ¡xim nombre de captures possibles
     int maxCaptures = 0;
     for (int i = 0; i < movs.getNumMovs(); i++) {
-        int numCaptures = movs.getMovimentsCaptura(i).size();
+        int numCaptures = (int)movs.getMovimentsCaptura(i).size();
         if (numCaptures > maxCaptures) {
             maxCaptures = numCaptures;
         }

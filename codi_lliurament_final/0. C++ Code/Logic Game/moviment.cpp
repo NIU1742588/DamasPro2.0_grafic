@@ -16,13 +16,13 @@ void Moviment::afegeixMoviment(const Posicio& pos, const vector<Posicio>& captur
     m_movimentsCaptura.push_back(captures);
     m_numMovs = m_moviments.size();
 
-	if (captures.size() > 0) {
+	/*if (captures.size() > 0) {
 		cout << "Captures: ";
 		for (const auto& captura : captures) {
 			cout << captura.toString() << " ";
 		}
 		cout << endl;
-	}
+	}*/
 }
 
 void Moviment::eliminaMoviment(const Posicio& pos)

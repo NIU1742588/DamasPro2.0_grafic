@@ -34,34 +34,31 @@ void Joc::inicialitza(ModeJoc mode, const string& nomFitxerTauler, const string&
 	carregaTaulerInicial(nomFitxerTauler);
 
     if (mode == MODE_JOC_NORMAL) {
-        m_cuaMoviments.esbuida();  // Limpiar cola existente
-        m_nomFitxerMoviments = nomFitxerMoviments;  // Guardar nombre para finalizar
+        m_cuaMoviments.esbuida();  // Netejar cua existent 
+        m_nomFitxerMoviments = nomFitxerMoviments;  // Guardar el nom per finalitzar
+        m_esperantClickReplay = false;
     }
     else if (mode == MODE_JOC_REPLAY) {
         m_cuaMoviments.carregaDeFitxer(nomFitxerMoviments);
+        m_esperantClickReplay = true;
 
     }
 }
 
 bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
 {
-    // Si la partida ha terminado, mostrar resultado y salir
+    // Si la partida ha acabat, mostrar resultat y sortir
     if (m_fiPartida) {
         GraphicManager::getInstance()->drawSprite(GRAFIC_FONS, 0, 0);
 
-        string guanyador = (m_guanyador == C_BLANC) ? "EUROPEUS" : "NIGERIANS";
+        string guanyador = (m_guanyador == C_BLANC) ? "BLANQUES" : "NEGRES";
 
-        GraphicManager::getInstance()->drawFont(FONT_WHITE_30,
-            (TAMANY_PANTALLA_X-500) / 2,
-            100,
-            1.25, "GUANYEN ELS " + guanyador + "!!");
+        GraphicManager::getInstance()->drawFont(FONT_WHITE_30, (TAMANY_PANTALLA_X-500) / 2, 100, 1.25, "GUANYEN LES " + guanyador + "!!");
 
         GraphicManager::getInstance()->drawSprite(GRAFIC_POTATO_GOOD, (TAMANY_PANTALLA_X - 450) / 2, TAMANY_PANTALLA_Y - 500);
 
-        GraphicManager::getInstance()->drawFont(FONT_RED_30,
-            10,
-            TAMANY_PANTALLA_Y - 30,
-            0.5, "Premi ESC per sortir");
+        GraphicManager::getInstance()->drawFont(FONT_RED_30, 10, TAMANY_PANTALLA_Y - 30, 0.5, "Premi ESC per sortir");
+
         return true;
     }
 
@@ -80,17 +77,20 @@ bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
     Posicio posActual = conversorCoordenades(mousePosX, mousePosY);
 
     if (m_mode == MODE_JOC_REPLAY && !m_cuaMoviments.buida() && mouseStatus && !clickAnterior_out) {
+        if (m_esperantClickReplay)
+        {
+            // Primer click per iniciar el replay
+            m_esperantClickReplay = false;
+        }
+        else
+        {
             m_tauler.actualitzaMovimentsValids();
             Moviment mov = m_cuaMoviments.treu();
-            bool out = m_tauler.mouFitxa(mov.getInici(), mov.getFi());
-
-            cout << "fa mov -> " << out << endl;
-
-            // Cambiar turno después de cada movimiento en replay
-            m_tornActual = (m_tornActual == C_BLANC) ? C_NEGRE : C_BLANC;
-
-            // Comprobar si la partida ha terminado después del movimiento
+            m_tauler.mouFitxa(mov.getInici(), mov.getFi());
+            // canviar turn y comprobar fi de partida…
+            m_tornActual = (m_tornActual == C_BLANC ? C_NEGRE : C_BLANC);
             comprovaFiPartida();
+        }
 
     } else if (m_mode == MODE_JOC_NORMAL && mouseStatus) {
         
@@ -105,17 +105,15 @@ bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
                 int x = POS_X_TAULER + CASELLA_INICIAL_X + m_fitxaSeleccionada.getColumna() * AMPLADA_CASELLA;
                 int y = POS_Y_TAULER + CASELLA_INICIAL_Y + m_fitxaSeleccionada.getFila() * ALCADA_CASELLA;
 
-                // Usamos el gráfico de posición válida para resaltar la selección
                 GraphicManager::getInstance()->drawSprite(GRAFIC_POSICIO_VALIDA, x, y);
 
-                // Volver a dibujar la ficha encima del resaltado
                 Fitxa fitxa = m_tauler.getCela(m_fitxaSeleccionada.getFila(), m_fitxaSeleccionada.getColumna());
                 fitxa.visualitza(x, y);
         
             }
         }
 
-        // Sistema de selección y movimiento
+        // Sistema de selecció y movimient
         static bool clickAnterior = false;
         Posicio posActual = conversorCoordenades(mousePosX, mousePosY);
 
@@ -125,7 +123,7 @@ bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
             {
                 if (!m_teSeleccio)
                 {
-                    // Seleccionar ficha si es del color del turno actual
+                    // Seleccionar fitxa si es del color del torn actual
                     ColorFitxa colorFitxa = m_tauler.getCela(posActual.getFila(), posActual.getColumna()).getColor();
                     if (colorFitxa == m_tornActual)
                     {
@@ -141,14 +139,14 @@ bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
                 else
                 {
 				
-                    // Intentar mover la ficha seleccionada
+                    // Intentar moure la fitxa seleccionada
                     bool movimentValid = false;
 
-                    // Verificar si el movimiento es válido
+                    // Verificar si el movimient és valid
                     for (const auto& mov : m_movimentsValids)
                     {
 
-					    //cout << "Verificando movimiento: " << m_fitxaSeleccionada.toString() <<  " -> " << mov.toString() << endl;
+					    //cout << "Verificant movimient: " << m_fitxaSeleccionada.toString() <<  " -> " << mov.toString() << endl;
                         if (mov == posActual)
                         {
                             movimentValid = true;
@@ -158,23 +156,23 @@ bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
 
                     if (movimentValid)
                     {
-                        // Realizar el movimiento
+                        // Realitzar el movimento
                         m_tauler.mouFitxa(m_fitxaSeleccionada, posActual);
 
-						// Guardar el movimiento en la cola
+						// Guardar el movimient a la cua
                         guardaMoviment(m_fitxaSeleccionada, posActual);
 
-                        // Cambiar turno y resetear selección
+                        // Cambiar torn y resetejar la seleccio
                         m_tornActual = (m_tornActual == C_BLANC) ? C_NEGRE : C_BLANC;
                         m_teSeleccio = false;
                         m_movimentsValids.clear();
 
-                        // Comprobar si la partida ha terminado
+                        // Comprobar si la partida ha acabat
                         comprovaFiPartida();
                     }
                     else
                     {
-                        // Si se hace click en otra ficha del mismo color, cambiar selección
+                        // Si es fa click en una altre fitxa del mateix color, canviar selecció
                         ColorFitxa colorNovaFitxa = m_tauler.getCela(posActual.getFila(), posActual.getColumna()).getColor();
                         if (colorNovaFitxa == m_tornActual)
                         {
@@ -187,7 +185,7 @@ bool Joc::actualitza(int mousePosX, int mousePosY, bool mouseStatus)
                         }
                         else
                         {
-                            // Click en posición inválida, cancelar selección
+                            // Click en posició invàlida, cancelar selecció
                             m_teSeleccio = false;
                             m_movimentsValids.clear();
                         }
@@ -223,7 +221,6 @@ void Joc::finalitza()
 	▪ Si el mode és MODE_JOC_REPLAY, no s’ha de fer res.
 	*/
 
-    // Solo guardar una vez al finalizar la partida
     if (!m_finalitzaCridat && m_mode == MODE_JOC_NORMAL) {
         m_cuaMoviments.guardaAFitxer(m_nomFitxerMoviments);
         m_finalitzaCridat = true;
@@ -231,7 +228,7 @@ void Joc::finalitza()
 }
 
 void Joc::comprovaFiPartida() {
-    // Contar fichas de cada jugador
+    // Comtar fitxas de cada jugador
     int blanques = 0, negres = 0;
 
     for (int fila = 0; fila < NUM_FILES_TAULER; fila++) {
@@ -245,19 +242,19 @@ void Joc::comprovaFiPartida() {
         }
     }
 
-    // Comprobar condiciones de fin de juego
+    // Comprobar condicions de fi de joc
     if (blanques == 0 || negres == 0) {
         m_fiPartida = true;
         m_guanyador = (blanques > 0) ? C_BLANC : C_NEGRE;
 
-        // Mostrar resultado en consola
+        // Mostrar resultat en consola
         string guanyador = (m_guanyador == C_BLANC) ? "EUROPEUS" : "NIGERIANS";
         cout << "PARTIDA FINALITZADA! Guanyen els " << guanyador << endl;
     }
 }
 
 void Joc::guardaMoviment(const Posicio& origen, const Posicio& desti) {
-    // Solo guardar movimientos en modo normal
+    // Nomes guardar movimientos en modo normal
     if (m_mode == MODE_JOC_NORMAL) {
         m_cuaMoviments.afegeix(Moviment(origen, desti));
     }
@@ -276,44 +273,19 @@ void Joc::carregaTaulerInicial(const string& nomFitxer) {
     }
 }
 
-void Joc::carregaMovimentsReplay(const string& nomFitxer) {
-
-    cout << "Fitxer: " << nomFitxer << endl;
-
-    ifstream fitxer(nomFitxer);
-    if (fitxer.is_open()) {
-        cout << "Llegint moviments" << endl;
-        string posInici, posFinal;
-
-        while (fitxer >> posInici >> posFinal) {
-
-            cout << "Data: " << posInici << " " << posFinal << endl;
-
-			Posicio posicioInici(posInici);
-			Posicio posicioFinal(posFinal);
-
-        }
-
-        fitxer.close();
-    }
-    else {
-        cerr << "Error: No s'ha pogut obrir el fitxer " << nomFitxer << endl;
-    }
-}
-
 Posicio Joc::conversorCoordenades(int x, int y) const {
-    // Calcular posición relativa al tablero
+    // Calcular posició relativa al tauler
     int relX = x - (POS_X_TAULER + CASELLA_INICIAL_X);
     int relY = y - (POS_Y_TAULER + CASELLA_INICIAL_Y);
 
-    // Verificar límites
+    // Verificar límits
     if (relX < 0 || relY < 0 ||
         relX >= NUM_COLS_TAULER * AMPLADA_CASELLA ||
         relY >= NUM_FILES_TAULER * ALCADA_CASELLA) {
-        return Posicio(-1, -1); // Posición inválida
+        return Posicio(-1, -1); // Posició invàlida
     }
 
-    // Calcular fila y columna
+    // Calcular fila i columna
     int columna = relX / AMPLADA_CASELLA;
     int fila = relY / ALCADA_CASELLA;
 
@@ -331,7 +303,7 @@ void Joc::processaSeleccio(const Posicio& pos) {
 void Joc::processaMoviment(const Posicio& desti) {
     bool movimentValid = false;
 
-    // Comprobar si el destino está en movimientos válidos
+    // Comprobar si el desti està en movimients vàlids
     for (const auto& pos : m_movimentsValids) {
         if (pos == desti) {
             movimentValid = true;
@@ -340,23 +312,21 @@ void Joc::processaMoviment(const Posicio& desti) {
     }
 
     if (movimentValid) {
-        // Realizar movimiento
+        // Realitzar moviment
         Moviment mov(m_fitxaSeleccionada, desti);
         //m_tauler.mou(mov);
 
-        // Guardar movimiento (modo normal)
+        // Guardar moviment (mode normal)
         if (m_mode == MODE_JOC_NORMAL) {
             guardaMoviment(m_fitxaSeleccionada, desti);
         }
-
-        // Cambiar turno
         canviaTorn();
 
-        // Comprobar fin de partida
+        // Comprobar fi de partida
         comprovaFiPartida();
     }
 
-    // Resetear selección
+    // Resetejar selecció
     m_teSeleccio = false;
     m_movimentsValids.clear();
 }

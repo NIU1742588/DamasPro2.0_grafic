@@ -47,7 +47,7 @@ private:
     bool m_teSeleccio;
     vector<Posicio> m_movimentsValids;
     bool m_finalitzaCridat;
-
+    bool m_esperantClickReplay;
 	string m_nomFitxerMoviments;  // Nom del fitxer per guardar moviments en mode normal
 
 
@@ -58,7 +58,6 @@ private:
     void comprovaFiPartida();
     void guardaMoviment(const Posicio& origen, const Posicio& desti);
     void carregaTaulerInicial(const string& nomFitxer);
-    void carregaMovimentsReplay(const string& nomFitxer);
     Posicio conversorCoordenades(int x, int y) const;
 };
 

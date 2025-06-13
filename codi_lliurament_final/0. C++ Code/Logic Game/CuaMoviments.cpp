@@ -23,7 +23,7 @@ void CuaMoviments::afegeix(const Moviment& moviment) {
 
 Moviment CuaMoviments::treu() {
     if (buida()) {
-        // Devolver movimiento inválido si la cola está vacía
+        //Retorna moviment invàlid si la cua esta buida 
         return Moviment(Posicio(-1, -1), Posicio(-1, -1));
     }
 
@@ -49,7 +49,7 @@ void CuaMoviments::esbuida() {
     }
 }
 
-// Guarda todos los movimientos en un archivo
+// Guarda tots els moviments en un arxiu
 void CuaMoviments::guardaAFitxer(const std::string& nomFitxer) const {
     std::ofstream fitxer(nomFitxer);
     if (!fitxer.is_open()) {
@@ -69,9 +69,11 @@ void CuaMoviments::guardaAFitxer(const std::string& nomFitxer) const {
     fitxer.close();
 }
 
-// Carga movimientos desde un archivo
-void CuaMoviments::carregaDeFitxer(const std::string& nomFitxer) {
-    esbuida();  // Limpiar cola existente
+// Carga movimients desde un arxiu
+void CuaMoviments::carregaDeFitxer(const std::string& nomFitxer) 
+{
+    cout << "Carrega: " << nomFitxer << endl;
+    esbuida();  // Netejar cua existent
 
     std::ifstream fitxer(nomFitxer);
     if (!fitxer.is_open()) {
@@ -82,9 +84,9 @@ void CuaMoviments::carregaDeFitxer(const std::string& nomFitxer) {
     string posInici, posFinal;
     while (fitxer >> posInici >> posFinal) {
 
-		cout << "Llegint moviment: "
+		/*cout << "Llegint moviment: "
 			<< posInici<< " -> "
-			<< posFinal<< endl;
+			<< posFinal<< endl;*/
 
 		Posicio posicioInici(posInici);
 		Posicio posicioFinal(posFinal);
